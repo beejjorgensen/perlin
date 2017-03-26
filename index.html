@@ -11,32 +11,24 @@
         <script type="text/javascript" src="perlin.js"></script>
         <script type="text/javascript" src="main.js"></script>
 
-        <style>
-            #perlin-canvas {
-                border: 1px solid red;
-            }
-
-            input[type="text"] {
-                width: 3em;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="main.css">
     </head>
 
     <body>
         <canvas id="perlin-canvas"></canvas>
 
         <p>Grid size
-        <input type="text" id="gridx" value="40"> ×
-        <input type="text" id="gridy" value="20">
+        <input type="text" id="gridx" value="10"> ×
+        <input type="text" id="gridy" value="10">
 
         <p>Image size multiplier
-        <input type="text" id="input-size-mult" value="15">
+        <input type="text" id="input-size-mult" value="40">
         
         <p>Smoothing mode
         <select id="smooth-selector">
-            <option selected="selected" value="0">Raw</option>
+            <option value="0">Raw</option>
             <option value="1">Smooth</option>
-            <option value="2">Improved</option>
+            <option selected="selected" value="2">Improved</option>
         </select>
 
         <p><input type="button" value="Refresh" id="refresh-button">
