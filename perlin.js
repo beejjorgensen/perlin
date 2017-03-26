@@ -79,16 +79,18 @@
             function dotGridGradient(ix, iy, x, y) {
                 let v = new Vector2D(x - ix, y - iy);
 
-                //console.log(iy + " " + ix);
-                return _this.grid[iy][ix].dot(v);
+                let gx = ix < xgrid? ix: 0;
+                let gy = iy < ygrid? iy: 0;
+
+                return _this.grid[gy][gx].dot(v);
             }
 
             function noiseAt(x, y) {
                 // Grid coordinates
                 let x0 = x | 0; // To integer
                 let y0 = y | 0;
-                let x1 = x0 < xgrid - 1? x0 + 1: 0;
-                let y1 = y0 < ygrid - 1? y0 + 1: 0;
+                let x1 = x0 + 1;
+                let y1 = y0 + 1;
 
                 // Fractional part of grid coordinates
                 let tx = x - x0;
@@ -129,15 +131,8 @@
                 for (let x = 0; x < xsize; ++x) {
                     let gx = x * xratio;
 
-                    if (y === 3 && x == 2) {
-                        y = y;
-                    }
-                    if (y === 3 && x == 3) {
-                        y = y;
-                    }
                     g[y][x] = noiseAt(gx, gy);
                 }
-                y = y;
             }
 
             return g;
