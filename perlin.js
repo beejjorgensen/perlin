@@ -76,6 +76,15 @@
             let xgrid = this.xgrid;
             let ygrid = this.ygrid;
 
+            /**
+             * Find the dot product between a grid coordinate and
+             * the given point.
+             * 
+             * @param {number} ix 
+             * @param {number} iy 
+             * @param {number} x 
+             * @param {number} y 
+             */
             function dotGridGradient(ix, iy, x, y) {
                 let v = new Vector2D(x - ix, y - iy);
 
