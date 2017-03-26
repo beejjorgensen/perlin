@@ -4,6 +4,8 @@
 ;(function (ns) {
     "use strict";
 
+    let perlin;
+
     // Imports
     let Perlin = ns.Perlin;
 
@@ -25,7 +27,7 @@
     /**
      * Draw Perlin noise on the canvas
      */
-    function showPerlin(canvasElem) {
+    function showPerlin(canvasElem, createNew) {
         let canvas = qs(canvasElem);
 
         // Parameters for the Perlin noise
@@ -41,10 +43,15 @@
         canvas.height = canvasHeight;
 
         // Make a new noise generator
-        let p = new Perlin(gridWidth, gridHeight);
+        if (createNew) {
+            perlin = new Perlin(gridWidth, gridHeight);
+        }
+
+        // Set the smoothing
+        perlin.setSmoothing(parseInt(qs("#smooth-selector").value));
 
         // Make the noise
-        let noise = p.makeNoise(canvasWidth, canvasHeight);
+        let noise = perlin.makeNoise(canvasWidth, canvasHeight);
 
         // Draw it to a canvas
         let ctx = canvas.getContext('2d');
@@ -69,10 +76,17 @@
     }
 
     /**
+     * On Smooth mode changed
+     */
+    function onSmoothChange() {
+        showPerlin("#perlin-canvas");
+    }
+
+    /**
      * On refresh
      */
     function onRefresh() {
-        showPerlin("#perlin-canvas");
+        showPerlin("#perlin-canvas", true);
     }
 
     /**
@@ -80,8 +94,9 @@
      */
     function onLoad() {
         qs("#refresh-button").addEventListener('click', onRefresh);
+        qs("#smooth-selector").addEventListener('change', onSmoothChange);
 
-        showPerlin("#perlin-canvas");
+        showPerlin("#perlin-canvas", true);
     }
 
     window.addEventListener('load', onLoad);

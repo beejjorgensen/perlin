@@ -50,7 +50,41 @@
 
             this.xgrid = xgrid;
             this.ygrid = ygrid;
+            this.smoother = this.smoother0;
         }
+
+        /**
+         * No smoothing
+         *
+         * @param {number} t 
+         */
+        smoother0(t) {
+            return t;
+        }
+
+        /**
+         * 3t^2 - 2t^3 smoothing
+         *  
+         * @param {number} t 
+         */
+        smoother1(t) {
+            let t2 = t * t;
+
+            return 3 * t2 - 2 * t * t2;
+        }
+
+        /**
+         * 6t^5 - 15t^4 + 10t^3 smoothing
+         * 
+         * @param {Number} t 
+         */
+        smoother2(t) {
+            let t3 = t * t * t;
+            let t4 = t3 * t;
+
+            return 6 * t4 * t - 15 * t4 + 10 * t3;
+        }
+
 
         /**
          * Build a random unit vector grid
@@ -94,29 +128,6 @@
                 return _this.grid[gy][gx].dot(v);
             }
 
-            /**
-             * 3t^2 - 2t^3 smoothing
-             *  
-             * @param {number} t 
-             */
-            function smoother1(t) {
-                let t2 = t * t;
-
-                return 3 * t2 - 2 * t * t2;
-            }
-
-            /**
-             * 6t^5 - 15t^4 + 10t^3 smoothing
-             * 
-             * @param {Number} t 
-             */
-            function smoother2(t) {
-                let t3 = t * t * t;
-                let t4 = t3 * t;
-
-                return 6 * t4 * t - 15 * t4 + 10 * t3;
-            }
-
             function noiseAt(x, y) {
                 // Grid coordinates
                 let x0 = x | 0; // To integer
@@ -129,8 +140,8 @@
                 let ty = y - y0;
 
                 // Smoothing
-                tx = smoother2(tx);
-                ty = smoother2(ty);
+                tx = _this.smoother(tx);
+                ty = _this.smoother(ty);
 
                 let n0, n1;
 
@@ -172,6 +183,25 @@
             }
 
             return g;
+        }
+
+        /**
+         * Set the smoothing level
+         * 
+         * @param {number} n 0=raw, 1=smooth, 2=improved
+         */
+        setSmoothing(n) {
+            switch (n) {
+                case 0:
+                    this.smoother = this.smoother0;
+                    break;
+                case 1:
+                    this.smoother = this.smoother1;
+                    break;
+                case 2:
+                    this.smoother = this.smoother2;
+                    break;
+            }
         }
     }
 
