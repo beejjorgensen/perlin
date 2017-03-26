@@ -85,6 +85,29 @@
                 return _this.grid[gy][gx].dot(v);
             }
 
+            /**
+             * 3t^2 - 2t^3 smoothing
+             *  
+             * @param {number} t 
+             */
+            function smoother1(t) {
+                let t2 = t * t;
+
+                return 3 * t2 - 2 * t * t2;
+            }
+
+            /**
+             * 6t^5 - 15t^4 + 10t^3 smoothing
+             * 
+             * @param {Number} t 
+             */
+            function smoother2(t) {
+                let t3 = t * t * t;
+                let t4 = t3 * t;
+
+                return 6 * t4 * t - 15 * t4 + 10 * t3;
+            }
+
             function noiseAt(x, y) {
                 // Grid coordinates
                 let x0 = x | 0; // To integer
@@ -95,6 +118,10 @@
                 // Fractional part of grid coordinates
                 let tx = x - x0;
                 let ty = y - y0;
+
+                // Smoothing
+                tx = smoother2(tx);
+                ty = smoother2(ty);
 
                 let n0, n1;
 
