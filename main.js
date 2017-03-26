@@ -31,10 +31,30 @@
         let canvas = qs(canvasElem);
 
         // Parameters for the Perlin noise
-        let gridWidth = 40;
-        let gridHeight = 20;
+        let gridWidth = parseInt(qs("#gridx").value);
+        let gridHeight = parseInt(qs("#gridy").value);
 
-        const mult = 15;
+        let mult = parseInt(qs("#input-size-mult").value);
+
+        if (mult < 1 || mult != mult) {
+            alert("Enter a valid multiplier greater than 1");
+            return;
+        }
+        
+        if (gridWidth < 1 || gridWidth != gridWidth) {
+            alert("Enter a valid grid width greater than 1");
+            return;
+        }
+        
+        if (gridHeight < 1 || gridHeight != gridHeight) {
+            alert("Enter a valid grid height greater than 1");
+            return;
+        }
+
+        gridWidth = gridWidth|0; // To int
+        gridHeight = gridHeight|0;
+        mult = mult|0;
+        
         let canvasWidth = gridWidth * mult;
         let canvasHeight = gridHeight * mult;
 
