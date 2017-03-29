@@ -5,6 +5,7 @@
     "use strict";
 
     let options = {};
+    let layer0 = null;
 
     // Imports
     let Perlin = ns.Perlin;
@@ -119,10 +120,12 @@
      * Generate the fractal
      */
     function generateFractal() {
-        let layers = [];
         let gridsize = options.gridStart;
+        let gain = options.gainStart;
 
-        // Generate n layers of Perlin Noise
+        layer0 = null;
+
+        // Generate and merge n layers of Perlin Noise
         for (let i = 0; i < options.iterations; i++) {
 
             // New generator for this grid
@@ -130,24 +133,15 @@
             perlin.setSmoothing(2); // Improved
 
             // New noise for canvas size
-            let noise = perlin.makeNoise(options.width, options.height);
+            let layer = perlin.makeNoise(options.width, options.height);
 
-            // Save for compositing later
-            layers.push(noise);
+            // If we're first, nothing to merge, so save and continue
+            if (layer0 === null) {
+                layer0 = layer;
+                continue;
+            }
 
-            // next grid size down
-            gridsize *= 2;
-        }
-
-        // Merge layers
-        // All the data goes from -1.0 to 1.0. We'll just add them weighted by gain.
-        // Result stored in layers[0]
-
-        let gain = options.gainStart;
-        let layer0 = layers[0];
-
-        for (let i = 1; i < layers.length; i++) {
-            let layer = layers[i];
+            // Merge layers
 
             // Loop through all pixels
             for (let j = 0; j < layer.length; j++) {
@@ -161,7 +155,11 @@
                 }
             }
 
+            // Modify the gain
             gain *= options.gain;
+
+            // next grid size down
+            gridsize *= 2;
         }
 
         // Render onto canvas
@@ -176,7 +174,7 @@
         let imageData = ctx.createImageData(options.width, options.height);
         let data = imageData.data;
 
-        let noise = layers[0];
+        let noise = layer0;
 
         let ai = 0; // Image data index;
         for (let y = 0; y < options.height; y++) {
