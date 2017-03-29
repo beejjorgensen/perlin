@@ -117,6 +117,47 @@
     }
 
     /**
+     * Render layer0 to the canvas
+     */
+    function renderToCanvas(){
+        // Render onto canvas
+        // Grayscale for now, but TODO colormap
+        let canvas = qs("#fractal-perlin-canvas");
+
+        canvas.width = options.width;
+        canvas.height = options.height;
+
+        let ctx = canvas.getContext('2d');
+
+        let imageData = ctx.createImageData(options.width, options.height);
+        let data = imageData.data;
+
+        let noise = layer0;
+
+        let ai = 0; // Image data index;
+        for (let y = 0; y < options.height; y++) {
+            for (let x = 0; x < options.width; x++) {
+                let r, g, b;
+
+                // Remap noise from -1..1 to 0..255
+                //let gray = ((noise[y][x] + 1)/2 * 255)|0;
+                //data[ai++] = gray; // Red
+                //data[ai++] = gray; // Green
+                //data[ai++] = gray; // Blue
+
+                // Remap noise to color
+                [r, g, b] = noiseToColor(noise[y][x]);
+                data[ai++] = r;   // Red
+                data[ai++] = g;   // Green
+                data[ai++] = b;   // Blue
+                data[ai++] = 255; // Alpha
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+    }
+
+    /**
      * Generate the fractal
      */
     function generateFractal() {
@@ -162,41 +203,7 @@
             gridsize *= 2;
         }
 
-        // Render onto canvas
-        // Grayscale for now, but TODO colormap
-        let canvas = qs("#fractal-perlin-canvas");
-
-        canvas.width = options.width;
-        canvas.height = options.height;
-
-        let ctx = canvas.getContext('2d');
-
-        let imageData = ctx.createImageData(options.width, options.height);
-        let data = imageData.data;
-
-        let noise = layer0;
-
-        let ai = 0; // Image data index;
-        for (let y = 0; y < options.height; y++) {
-            for (let x = 0; x < options.width; x++) {
-                let r, g, b;
-
-                // Remap noise from -1..1 to 0..255
-                //let gray = ((noise[y][x] + 1)/2 * 255)|0;
-                //data[ai++] = gray; // Red
-                //data[ai++] = gray; // Green
-                //data[ai++] = gray; // Blue
-
-                // Remap noise to color
-                [r, g, b] = noiseToColor(noise[y][x]);
-                data[ai++] = r;   // Red
-                data[ai++] = g;   // Green
-                data[ai++] = b;   // Blue
-                data[ai++] = 255; // Alpha
-            }
-        }
-
-        ctx.putImageData(imageData, 0, 0);
+        renderToCanvas();
     }
 
     /**
