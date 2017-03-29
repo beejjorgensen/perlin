@@ -38,6 +38,74 @@
     }
 
     /**
+     * Do some color mapping
+     *
+     * @param {number} n from -1..1
+     */
+    function noiseToColor(n) {
+
+        /**
+         * Return an [r,g,b] array for an n value and a colorMap
+         */
+        function lerpColors(colorMap, n) {
+            
+            /**
+             * Regular lerp
+             */
+            function lerp(a, b, t) {
+                return a + (b - a) * t;
+            }
+
+            /**
+             * Lerp between two color components in the color map
+             */
+            function getColor(colorIndex, t) { 
+                let colorValue0 = colorMap[i0][1][colorIndex];
+                let colorValue1 = colorMap[i1][1][colorIndex];
+
+                return lerp(colorValue0, colorValue1, t);
+            }
+
+            // Find our color range indexes
+            let i0, i1;
+
+            for (let i = 1; i < colorMap.length; i++) {
+                if (n <= colorMap[i][0]) {
+                    i0 = i - 1;
+                    i1 = i;
+                    break;
+                }
+            }
+
+            // Compute local t (from 0..1) in this color map range
+            let v0 = colorMap[i0][0];
+            let v1 = colorMap[i1][0];
+
+            let t = (n - v0) / (v1 - v0);
+
+            // Build and return RGB values
+            return [getColor(0, t), getColor(1, t), getColor(2, t)];
+        }
+
+        // Remap from -1..1 to 0..1
+        n = (n + 1) / 2;
+
+        // Clamp 0..1, just in case
+        n = Math.max(Math.min(n, 1), 0);
+
+        // Color map
+        let colorMap = [
+            [0.0, [104, 84, 2]],
+            [0.7, [20, 201, 0]],
+            [0.8, [255, 255, 255]],
+            [1.0, [255, 255, 255]]
+        ];
+
+        // Lerp the colors and return
+        return lerpColors(colorMap, n);
+    }
+
+    /**
      * Generate the fractal
      */
     function generateFractal() {
@@ -86,7 +154,6 @@
             gain *= options.gain;
         }
 
-
         // Render onto canvas
         // Grayscale for now, but TODO colormap
         let canvas = qs("#fractal-perlin-canvas");
@@ -104,13 +171,20 @@
         let ai = 0; // Image data index;
         for (let y = 0; y < options.height; y++) {
             for (let x = 0; x < options.width; x++) {
-                // Remap noise from -1..1 to 0..255
-                let gray = ((noise[y][x] + 1)/2 * 255)|0;
+                let r, g, b;
 
-                data[ai++] = gray; // Red
-                data[ai++] = gray; // Green
-                data[ai++] = gray; // Blue
-                data[ai++] = 255;  // Alpha
+                // Remap noise from -1..1 to 0..255
+                //let gray = ((noise[y][x] + 1)/2 * 255)|0;
+                //data[ai++] = gray; // Red
+                //data[ai++] = gray; // Green
+                //data[ai++] = gray; // Blue
+
+                // Remap noise to color
+                [r, g, b] = noiseToColor(noise[y][x]);
+                data[ai++] = r;   // Red
+                data[ai++] = g;   // Green
+                data[ai++] = b;   // Blue
+                data[ai++] = 255; // Alpha
             }
         }
 
