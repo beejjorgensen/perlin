@@ -34,7 +34,7 @@
         options.iterations = qs("#iterations").value;
         options.gainStart = qs("#gain-start").value;
         options.gain = qs("#gain").value;
-        options.water = qs("#water").value;
+        //options.water = qs("#water").value;
     }
 
     /**
