@@ -17,16 +17,22 @@
     <body>
         <canvas id="fractal-perlin-canvas"></canvas>
 
-        <p>Size <input type="text" id="width" value="300"> px square
+        <p>Size <input type="text" id="width" value="500"> px square
         <p>Starting grid size <input type="text" id="grid-start" value="5">
-        <p>Iterations <input type="text" id="iterations" value="6">
+        <p>Iterations <input type="text" id="iterations" value="7">
         <p>Starting gain <input type="text" id="gain-start" value="0.5">
         <p>Gain per iteration <input type="text" id="gain" value="0.6">
-        <p>Water level <input type="text" id="water" value="0.0"> (-1.0 to 1.0)
+        <p>Water level <input type="text" id="water" value="-1.0"> (-1.0 to 1.0)
+        <p>Color map <select id="colormap-select">
+            <option selected="selected" value="watersnow2">Oceans and snow</option>
+            <option value="snowcap1">Snowcaps 1</option>
+            <option value="watersnow1">Lakes and Snow</option>
+            <option value="gray">Grayscale</option>
+        </select>
 
         <p><input type="button" value="Update water/color" id="update-button">
 
-        <p><input type="button" value="New Map" id="new-map-button">
+        <p><input type="button" value="Generate Map" id="new-map-button">
 
     </body>
 

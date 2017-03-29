@@ -7,6 +7,40 @@
     let options = {};
     let layer0 = null;
 
+    let colorMap = {
+        "snowcap1": [ // No water, just land up to snow
+            [0.0, [0xe5, 0xff, 0xcc]],
+            [0.6, [0x84, 0x5b, 0x15]],
+            [0.8, [0xff, 0xff, 0xff]],
+            [1.0, [0xff, 0xff, 0xff]]
+        ],
+
+        "watersnow1": [ // Lakes and snow
+            [0.0, [0, 0, 0x33]],
+            [0.2, [0, 0, 0xff]],
+            [0.4, [0, 0xff, 0xff]],
+            [0.6, [0, 0x66, 0x33]],
+            [0.68, [0x66, 0x2a, 0]],
+            [0.8, [0xff, 0xff, 0xff]],
+            [1.0, [0xff, 0xff, 0xff]]
+        ],
+
+        "watersnow2": [ // Half water up to snow
+            [0.0, [0, 0, 0x33]],
+            [0.2, [0, 0, 0xff]],
+            [0.5, [0, 0xff, 0xff]],
+            [0.55, [0, 0x66, 0x33]], // Green
+            [0.68, [0x66, 0x2a, 0]], // Brown
+            [0.8, [0xff, 0xff, 0xff]],
+            [1.0, [0xff, 0xff, 0xff]]
+        ],
+
+        "gray": [
+            [0.0, [0,0,0]],
+            [1.0, [0xff, 0xff, 0xff]]
+        ]
+    };
+
     // Imports
     let Perlin = ns.Perlin;
 
@@ -36,6 +70,7 @@
         options.gainStart = parseFloat(qs("#gain-start").value);
         options.gain = parseFloat(qs("#gain").value);
         options.water = parseFloat(qs("#water").value);
+        options.colorMap = qs("#colormap-select").value;
 
         options.water = Math.min(Math.max(-1, options.water), 1); // Clamp -1..1
     }
@@ -96,30 +131,8 @@
         // Clamp 0..1, just in case
         n = Math.max(Math.min(n, 1), 0);
 
-        // Color map
-        /*
-        let colorMap = [
-            [0.0, [0, 0, 0x33]],
-            [0.2, [0, 0, 0xff]],
-            [0.4, [0, 0xff, 0xff]],
-            [0.6, [0, 0x66, 0x33]],
-            [0.8, [0xe5, 0xff, 0xcc]],
-            [1.0, [0x66, 0x2a, 0]]
-        ];
-        let colorMap = [
-            [0.0, [0,0,0]],
-            [1.0, [0xff, 0xff, 0xff]]
-        ]
-        */
-        let colorMap = [
-            [0.0, [0xe5, 0xff, 0xcc]],
-            [0.6, [0x84, 0x5b, 0x15]],
-            [0.8, [0xff, 0xff, 0xff]],
-            [1.0, [0xff, 0xff, 0xff]]
-        ];
-
         // Lerp the colors and return
-        return lerpColors(colorMap, n);
+        return lerpColors(colorMap[options.colorMap], n);
     }
 
     /**
@@ -239,6 +252,8 @@
 
         qs("#new-map-button").addEventListener('click', onNewMap);
         qs("#update-button").addEventListener('click', onUpdate);
+        qs("#colormap-select").addEventListener('change', onUpdate);
+        qs("#water").addEventListener('change', onUpdate);
      }
 
     window.addEventListener('load', onLoad);
