@@ -1,0 +1,11 @@
+html {
+    font-family: sans-serif;
+}
+
+#fractal-perlin-canvas {
+    border: 1px solid red;
+}
+
+input[type="text"] {
+    width: 4em;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Fractal Perlin Noise test</title>
+
+        <script type="text/javascript" src="base.js"></script>
+        <script type="text/javascript" src="vector.js"></script>
+        <script type="text/javascript" src="perlin.js"></script>
+        <script type="text/javascript" src="fractal-main.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="fractal.css">
+    </head>
+
+    <body>
+        <canvas id="fractal-perlin-canvas"></canvas>
+
+        <p>Size <input type="text" id="width" value="300"> px square
+        <p>Starting grid size <input type="text" id="grid-start" value="5">
+        <p>Iterations <input type="text" id="iterations" value="3">
+        <p>Starting gain <input type="text" id="gain-start" value="0.5">
+        <p>Gain per iteration <input type="text" id="gain" value="0.5">
+        <p>Water level <input type="text" id="water" value="0.5">
+
+        <p><input type="button" value="Refresh" id="refresh-button">
+
+    </body>
+
+</html>
