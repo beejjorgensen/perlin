@@ -19,6 +19,7 @@ Todo
 
 ### Fractal
 
+* Stop iterating when we've maxed out our sub-noise layer density
 * Use a seedable PRNG
     * Redraw same terrain when other user params change
 * Hillside shading
