@@ -29,13 +29,15 @@
      * Read the options from the form
      */
     function parseOptions() {
-        options.width = qs("#width").value;
+        options.width = parseInt(qs("#width").value);
         options.height = options.width; // Force square for now
-        options.gridStart = qs("#grid-start").value;
-        options.iterations = qs("#iterations").value;
-        options.gainStart = qs("#gain-start").value;
-        options.gain = qs("#gain").value;
-        //options.water = qs("#water").value;
+        options.gridStart = parseInt(qs("#grid-start").value);
+        options.iterations = parseInt(qs("#iterations").value);
+        options.gainStart = parseFloat(qs("#gain-start").value);
+        options.gain = parseFloat(qs("#gain").value);
+        options.water = parseFloat(qs("#water").value);
+
+        options.water = Math.min(Math.max(-1, options.water), 1); // Clamp -1..1
     }
 
     /**
@@ -104,6 +106,10 @@
             [0.8, [0xe5, 0xff, 0xcc]],
             [1.0, [0x66, 0x2a, 0]]
         ];
+        let colorMap = [
+            [0.0, [0,0,0]],
+            [1.0, [0xff, 0xff, 0xff]]
+        ]
         */
         let colorMap = [
             [0.0, [0xe5, 0xff, 0xcc]],
@@ -139,14 +145,16 @@
             for (let x = 0; x < options.width; x++) {
                 let r, g, b;
 
-                // Remap noise from -1..1 to 0..255
-                //let gray = ((noise[y][x] + 1)/2 * 255)|0;
-                //data[ai++] = gray; // Red
-                //data[ai++] = gray; // Green
-                //data[ai++] = gray; // Blue
+                let n = noise[y][x];
 
-                // Remap noise to color
-                [r, g, b] = noiseToColor(noise[y][x]);
+                if (n < options.water) {
+                    // Water color
+                    [r, g, b] = [0x00, 0x30,0xaf];
+                } else {
+                    // Remap noise to color
+                    [r, g, b] = noiseToColor(noise[y][x]);
+                }
+
                 data[ai++] = r;   // Red
                 data[ai++] = g;   // Green
                 data[ai++] = b;   // Blue
@@ -207,9 +215,17 @@
     }
 
     /**
+     * Handle update button
+     */
+    function onUpdate() {
+        parseOptions();
+        renderToCanvas();
+    }
+
+    /**
      * Handle the refresh button being hit
      */
-    function onRefresh() {
+    function onNewMap() {
         parseOptions();
         generateFractal();
     }
@@ -221,7 +237,8 @@
         parseOptions();
         generateFractal();
 
-        qs("#refresh-button").addEventListener('click', onRefresh);
+        qs("#new-map-button").addEventListener('click', onNewMap);
+        qs("#update-button").addEventListener('click', onUpdate);
      }
 
     window.addEventListener('load', onLoad);
