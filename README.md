@@ -3,7 +3,9 @@ Perlin Noise
 
 Messing around with Perlin noise.
 
-Demo: https://beejjorgensen.github.io/perlin/
+Perlin Demo: https://beejjorgensen.github.io/perlin/
+
+Fractal Demo: https://beejjorgensen.github.io/perlin/fractal.html
 
 Code adapted from the following sources:
 
