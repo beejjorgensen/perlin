@@ -21,4 +21,3 @@ Todo
 
 * Use a seedable PRNG
     * Redraw same terrain when other user params change
-* Hillside shading

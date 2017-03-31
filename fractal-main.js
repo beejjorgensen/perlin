@@ -28,7 +28,7 @@
         "watersnow2": [ // Half water up to snow
             [0.0, [0, 0, 0x33]],
             [0.2, [0, 0, 0xff]],
-            [0.5, [0, 0xff, 0xff]],
+            [0.5, [0, 0x7f, 0xff]],
             [0.55, [0, 0x66, 0x33]], // Green
             [0.68, [0x66, 0x2a, 0]], // Brown
             [0.8, [0xff, 0xff, 0xff]],
@@ -71,6 +71,8 @@
         options.gain = parseFloat(qs("#gain").value);
         options.water = parseFloat(qs("#water").value);
         options.colorMap = qs("#colormap-select").value;
+        options.hillShade = qs("#hillshading").checked;
+        options.hillShadeMult = parseFloat(qs("#hillshading-mult").value);
 
         options.water = Math.min(Math.max(-1, options.water), 1); // Clamp -1..1
     }
@@ -143,6 +145,23 @@
         return lerpColors(colorMap[options.colorMap], n);
     }
 
+    function hillShadeFactor(noise, x, y, width, height) {
+        // Figure the slope of the upper left to lower right
+        let ul = {}, lr = {}; // coords up and left and down and right
+
+        ul.x = x === 0? width - 1: x - 1;
+        ul.y = y === 0? height - 1: y - 1;
+
+        lr.x = x == width - 1? 0: x + 1;
+        lr.y = y == height - 1? 0: y + 1;
+
+        // dy will go from -2..2
+        let dy = noise[ul.y][ul.x] - noise[lr.y][lr.x];
+
+        // scale it
+        return 1 - dy * options.hillShadeMult;
+    }
+
     /**
      * Render layer0 to the canvas
      */
@@ -174,6 +193,18 @@
                 } else {
                     // Remap noise to color
                     [r, g, b] = noiseToColor(noise[y][x]);
+
+                    if (options.hillShade) {
+                        let factor = hillShadeFactor(noise, x, y, options.width, options.height);
+                        r *= factor;
+                        g *= factor;
+                        b *= factor;
+
+                        // Clamp 0..255
+                        r = Math.min(Math.max(0, r), 255);
+                        g = Math.min(Math.max(0, g), 255);
+                        b = Math.min(Math.max(0, b), 255);
+                    }
                 }
 
                 data[ai++] = r;   // Red
@@ -268,6 +299,8 @@
         qs("#update-button").addEventListener('click', onUpdate);
         qs("#colormap-select").addEventListener('change', onUpdate);
         qs("#water").addEventListener('change', onUpdate);
+        qs("#hillshading").addEventListener('change', onUpdate);
+        qs("#hillshading-mult").addEventListener('change', onUpdate);
      }
 
     window.addEventListener('load', onLoad);
