@@ -76,6 +76,14 @@
     }
 
     /**
+     * Set the max iterations
+     */
+    function setMaxIterations(i) {
+        options.iterations = i;
+        qs("#iterations").value =i;
+    }
+
+    /**
      * Do some color mapping
      *
      * @param {number} n from -1..1
@@ -222,6 +230,12 @@
 
             // next grid size down
             gridsize *= 2;
+
+            // Check if we're going into unnecessary work
+            if (gridsize > options.width) {
+                setMaxIterations(i);
+                break;
+            }
         }
 
         renderToCanvas();
